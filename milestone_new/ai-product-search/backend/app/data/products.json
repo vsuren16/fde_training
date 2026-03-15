@@ -1,0 +1,56 @@
+[
+  {
+    "id": "p-101",
+    "name": "Ivory Kurta Set",
+    "description": "Traditional ivory kurta set suitable for temple visits and family functions.",
+    "category": "traditional",
+    "price": 2999,
+    "image_url": "/static/images/ivory-kurta.jpg",
+    "available": true
+  },
+  {
+    "id": "p-102",
+    "name": "Navy Linen Shirt",
+    "description": "Breathable navy linen shirt for smart-casual summer outings.",
+    "category": "casual",
+    "price": 1499,
+    "image_url": "/static/images/navy-linen-shirt.jpg",
+    "available": true
+  },
+  {
+    "id": "p-103",
+    "name": "Pastel Saree",
+    "description": "Elegant pastel saree for festive and religious occasions.",
+    "category": "traditional",
+    "price": 3999,
+    "image_url": "/static/images/pastel-saree.jpg",
+    "available": true
+  },
+  {
+    "id": "p-104",
+    "name": "Athleisure Jogger Set",
+    "description": "Stretchable jogger and top combo for travel and all-day comfort.",
+    "category": "sports",
+    "price": 2199,
+    "image_url": "/static/images/jogger-set.jpg",
+    "available": true
+  },
+  {
+    "id": "p-105",
+    "name": "Charcoal Blazer",
+    "description": "Formal charcoal blazer for office presentations and meetings.",
+    "category": "formal",
+    "price": 5499,
+    "image_url": "/static/images/charcoal-blazer.jpg",
+    "available": true
+  },
+  {
+    "id": "p-106",
+    "name": "Floral Midi Dress",
+    "description": "Lightweight floral midi dress for brunch and weekend plans.",
+    "category": "casual",
+    "price": 2799,
+    "image_url": "/static/images/floral-midi-dress.jpg",
+    "available": false
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "title": "Nike Air Zoom Pegasus 40",
+    "description": "Neutral running shoes with responsive cushioning for daily training.",
+    "brand": "Nike",
+    "category": "Shoes",
+    "price": 9999,
+    "rating": 4.5,
+    "tags": ["running", "men", "daily-trainer"]
+  },
+  {
+    "title": "Adidas Ultraboost Light",
+    "description": "High-comfort running shoes with Boost cushioning and breathable upper.",
+    "brand": "Adidas",
+    "category": "Shoes",
+    "price": 15999,
+    "rating": 4.6,
+    "tags": ["running", "women", "comfort"]
+  },
+  {
+    "title": "Apple iPhone 15",
+    "description": "Latest generation smartphone with advanced camera and performance improvements.",
+    "brand": "Apple",
+    "category": "Electronics",
+    "price": 79999,
+    "rating": 4.7,
+    "tags": ["phone", "smartphone", "ios"]
+  },
+  {
+    "title": "Samsung Galaxy S24",
+    "description": "Flagship Android phone with premium display and camera system.",
+    "brand": "Samsung",
+    "category": "Electronics",
+    "price": 74999,
+    "rating": 4.6,
+    "tags": ["phone", "smartphone", "android"]
+  }
+]

@@ -1,0 +1,8 @@
+﻿pytest==8.4.1
+pyspark==3.5.2
+pydantic-settings==2.10.1
+pydantic==2.11.7
+pymongo==4.14.1
+pyjwt==2.10.1
+bcrypt==4.3.0
+locust==2.35.0

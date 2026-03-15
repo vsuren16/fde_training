@@ -1,0 +1,87 @@
+.tm-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.tm-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.tm-sub {
+  margin: 6px 0 0;
+  opacity: 0.75;
+}
+
+.tm-status {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+.tm-error {
+  border-color: #ffcccc;
+  background: #fff5f5;
+}
+
+.tm-card {
+  margin-top: 16px;
+  border: 1px solid #ececec;
+  border-radius: 14px;
+  overflow: hidden;
+  background: white;
+}
+
+.tm-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tm-table thead th {
+  text-align: left;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  padding: 12px 14px;
+  border-bottom: 1px solid #efefef;
+  background: #fbfbfb;
+}
+
+.tm-table tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f2f2f2;
+  vertical-align: top;
+}
+
+.tm-title {
+  text-transform: none;
+}
+
+.tm-badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.tm-badge--done {
+  background: #eefbf1;
+  border-color: #bfe9c7;
+}
+
+.tm-badge--pending {
+  background: #fff8e9;
+  border-color: #f0d39a;
+}
+
+.tm-empty {
+  padding: 16px;
+  opacity: 0.7;
+}

@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8050:8050"
+    env_file:
+      - .env.example
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8050/health/live')"]
+      interval: 20s
+      timeout: 5s
+      retries: 3

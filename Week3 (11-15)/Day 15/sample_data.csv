@@ -1,0 +1,9 @@
+order_id,order_date,customer_id,product,category,quantity,price,payment_mode,city
+101,2024-01-01,C001,Laptop,Electronics,1,70000,Credit Card,Bangalore
+102,2024-01-01,C002,Mobile,Electronics,2,20000,UPI,Chennai
+103,2024-01-02,C003,Headphones,Accessories,3,3000,Debit Card,Hyderabad
+104,2024-01-02,C001,Keyboard,Accessories,1,1500,Credit Card,Bangalore
+105,2024-01-03,C004,Monitor,Electronics,1,12000,Net Banking,Pune
+106,2024-01-03,C002,Mouse,Accessories,2,800,UPI,Chennai
+107,2024-01-04,C005,Tablet,Electronics,1,25000,Credit Card,Delhi
+108,2024-01-04,C003,Laptop,Electronics,1,68000,Debit Card,Hyderabad

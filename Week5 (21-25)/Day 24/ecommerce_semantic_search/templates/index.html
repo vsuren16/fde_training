@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI E-Commerce Semantic Search</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --text: #1d2433;
+      --muted: #5f6b85;
+      --primary: #1263db;
+      --border: #dde4f0;
+      --success: #0b8f52;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top right, #dce8ff, transparent 35%), var(--bg);
+    }
+    .container {
+      max-width: 980px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 8px 22px rgba(29, 36, 51, 0.06);
+    }
+    h1 {
+      margin: 0 0 1rem;
+      font-size: 1.6rem;
+    }
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.75rem;
+    }
+    input {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      font-size: 1rem;
+    }
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: 0;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+    }
+    .grid {
+      margin-top: 1rem;
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 2fr 1fr;
+    }
+    .result-item {
+      border-top: 1px solid var(--border);
+      padding: 0.7rem 0;
+    }
+    .muted { color: var(--muted); }
+    .score { color: var(--success); font-weight: 600; }
+    pre {
+      white-space: pre-wrap;
+      background: #f2f6ff;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      margin: 0;
+    }
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+      .search-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>AI-Powered E-Commerce Semantic Search</h1>
+      <div class="search-row">
+        <input id="query" value="comfortable running shoes under 5000" placeholder="Type your semantic query" />
+        <button id="searchBtn">Search</button>
+      </div>
+      <p class="muted">Shows ANN retrieval + cross-encoder re-ranking + grounded LLM explanation + judge score.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Ranked Products</h3>
+        <div id="orders" class="muted"></div>
+        <div id="results"></div>
+        <h3>LLM Explanation</h3>
+        <pre id="explanation">Run a query to generate grounded recommendations.</pre>
+      </div>
+      <div class="card">
+        <h3>Evaluation Scores</h3>
+        <div id="scores" class="muted">No evaluation yet.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const queryInput = document.getElementById("query");
+    const searchBtn = document.getElementById("searchBtn");
+    const resultsDiv = document.getElementById("results");
+    const explanationPre = document.getElementById("explanation");
+    const scoresDiv = document.getElementById("scores");
+    const ordersDiv = document.getElementById("orders");
+
+    async function doSearch() {
+      const query = queryInput.value.trim();
+      if (!query) return;
+
+      resultsDiv.innerHTML = "Searching...";
+      explanationPre.textContent = "Generating...";
+      scoresDiv.textContent = "Evaluating...";
+
+      try {
+        const res = await fetch("/search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query, judge_enabled: true })
+        });
+        const data = await res.json();
+
+        ordersDiv.innerHTML = `
+          <strong>Before re-rank:</strong> ${JSON.stringify(data.pre_rerank_order)}<br/>
+          <strong>After re-rank:</strong> ${JSON.stringify(data.post_rerank_order)}
+        `;
+
+        resultsDiv.innerHTML = (data.products || []).map(p => `
+          <div class="result-item">
+            <strong>${p.name}</strong> (ID: ${p.product_id})<br/>
+            <span class="muted">Category: ${p.category} | Price: INR ${p.price}</span><br/>
+            <span class="muted">Vector: ${Number(p.vector_score || 0).toFixed(3)}, Re-rank: ${Number(p.rerank_score || 0).toFixed(3)}</span><br/>
+            <div>${p.description || ""}</div>
+          </div>
+        `).join("") || "No products found.";
+
+        explanationPre.textContent = data.llm_explanation || "No explanation generated.";
+
+        const s = data.evaluation_score || {};
+        scoresDiv.innerHTML = `
+          <div>Relevance: <span class="score">${s.relevance ?? "-"}</span></div>
+          <div>Faithfulness: <span class="score">${s.faithfulness ?? "-"}</span></div>
+          <div>Completeness: <span class="score">${s.completeness ?? "-"}</span></div>
+          <div>Overall: <span class="score">${s.overall_score ?? "-"}</span></div>
+          <div class="muted">${s.reasoning || ""}</div>
+        `;
+      } catch (err) {
+        resultsDiv.textContent = "Error while searching.";
+        explanationPre.textContent = String(err);
+        scoresDiv.textContent = "Error";
+      }
+    }
+
+    searchBtn.addEventListener("click", doSearch);
+    queryInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") doSearch();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "title": "AI Commerce Platform",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Gateway Requests",
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "targets": [{"expr": "rate(gateway_requests_total[1m])", "legendFormat": "{{route}}"}]
+    },
+    {
+      "type": "timeseries",
+      "title": "Search Latency p95",
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+      "targets": [{"expr": "histogram_quantile(0.95, sum(rate(search_service_latency_seconds_bucket[5m])) by (le))", "legendFormat": "p95"}]
+    }
+  ]
+}

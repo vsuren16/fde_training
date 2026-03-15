@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.venv/
+venv/
+**/.venv/
+**/venv/
+
+# Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# Environment
+.env
+.env.*
+!.env.example
+backend/.env
+
+# Databases and local data
+*.db
+*.sqlite3
+backend/chroma_data/
+FastApi/chroma_data/
+backend/verify.db
+backend/test.db
+backend/app.db
+
+# Logs
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Archives
+*.zip
+
+
+*.dll
+

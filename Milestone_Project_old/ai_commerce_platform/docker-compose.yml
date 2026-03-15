@@ -1,0 +1,32 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: ai-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./infra/mongo/init_indexes.js:/docker-entrypoint-initdb.d/init_indexes.js:ro
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  spark-submit:
+    build:
+      context: .
+      dockerfile: data-engineering/inventory_pipeline/Dockerfile
+    env_file:
+      - .env.example
+    depends_on:
+      mongo:
+        condition: service_healthy
+    command: ["python", "spark_job.py"]
+    profiles: ["manual"]
+    volumes:
+      - ./data-engineering/inventory_pipeline/logs:/app/logs
+
+volumes:
+  mongo_data:

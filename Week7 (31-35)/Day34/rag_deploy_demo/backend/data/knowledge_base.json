@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "RAG Basics",
+    "content": "Retrieval augmented generation combines retrieval with generation so answers stay grounded in external documents."
+  },
+  {
+    "id": 2,
+    "title": "Chunking",
+    "content": "Chunking splits large documents into smaller passages so retrieval can return targeted context instead of whole files."
+  },
+  {
+    "id": 3,
+    "title": "Embeddings",
+    "content": "Embeddings convert text into vectors so similar questions and passages can be matched through similarity search."
+  },
+  {
+    "id": 4,
+    "title": "Deployment",
+    "content": "A simple deployment pattern is a FastAPI backend for the API and a React frontend built with Vite for the user interface."
+  },
+  {
+    "id": 5,
+    "title": "Monitoring",
+    "content": "Useful RAG monitoring includes response latency, retrieval quality, answer relevance, and source citation coverage."
+  },
+  {
+    "id": 6,
+    "title": "Azure DevOps",
+    "content": "For Azure DevOps, keep the repository structure clean with separate backend and frontend folders plus environment configuration."
+  }
+]

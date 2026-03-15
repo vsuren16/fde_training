@@ -1,0 +1,14 @@
+[
+  {
+    "query": "traditional temple outfit",
+    "expected_top_ids": ["p-101", "p-103"]
+  },
+  {
+    "query": "office formal meeting",
+    "expected_top_ids": ["p-105"]
+  },
+  {
+    "query": "casual weekend shirt",
+    "expected_top_ids": ["p-102"]
+  }
+]

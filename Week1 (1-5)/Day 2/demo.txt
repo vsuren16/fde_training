@@ -1,0 +1,3 @@
+This is a demo file.
+It contains sample text for file operations.
+File handling is important in programming. 

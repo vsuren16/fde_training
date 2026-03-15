@@ -1,0 +1,19 @@
+.employee-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border-radius: 16px;
+}
+
+.employee-card:hover {
+  transform: translateY(-2px);
+}
+
+.employee-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #0d6efd, #6f42c1);
+}

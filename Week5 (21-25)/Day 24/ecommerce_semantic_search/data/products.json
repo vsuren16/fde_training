@@ -1,0 +1,92 @@
+[
+  {
+    "product_id": 101,
+    "name": "Velocity Run Pro",
+    "description": "Lightweight running shoes designed for daily road running with breathable mesh, cushioned midsole, and anti-slip outsole.",
+    "price": 4899,
+    "category": "shoes",
+    "specifications": "Weight: 240g; Drop: 8mm; Material: engineered mesh; Sole: rubber grip; Use: road running",
+    "reviews": "Very comfortable for 10k runs and good value for money."
+  },
+  {
+    "product_id": 102,
+    "name": "TrailFlex X2",
+    "description": "Trail running shoes with aggressive lugs, ankle support, and water-resistant upper for rugged terrain.",
+    "price": 6299,
+    "category": "shoes",
+    "specifications": "Weight: 290g; Drop: 6mm; Material: ripstop upper; Sole: deep lug outsole",
+    "reviews": "Excellent grip on wet surfaces but a little firm for long road runs."
+  },
+  {
+    "product_id": 103,
+    "name": "CloudStep Everyday",
+    "description": "Cushioned sneakers built for all-day comfort, ideal for walking, commuting, and light workouts.",
+    "price": 3299,
+    "category": "shoes",
+    "specifications": "Weight: 260g; Foam: soft EVA; Upper: knit; Insole: memory foam",
+    "reviews": "Great comfort for long office days and casual walking."
+  },
+  {
+    "product_id": 104,
+    "name": "SprintLite Elite",
+    "description": "Performance running shoes for speed sessions with responsive foam and stable heel lock.",
+    "price": 5499,
+    "category": "shoes",
+    "specifications": "Weight: 220g; Plate: nylon blend; Upper: woven mesh; Use: tempo and race",
+    "reviews": "Very responsive for intervals; snug fit in toe box."
+  },
+  {
+    "product_id": 105,
+    "name": "UrbanStride Slip-On",
+    "description": "Slip-on comfort shoes with stretch knit upper and supportive arch for daily wear.",
+    "price": 2799,
+    "category": "shoes",
+    "specifications": "Weight: 230g; Arch support: medium; Upper: stretch knit; Sole: EVA",
+    "reviews": "Easy to wear and surprisingly cushioned for daily errands."
+  },
+  {
+    "product_id": 201,
+    "name": "FitPulse Smartwatch S3",
+    "description": "Fitness smartwatch with heart rate, sleep tracking, and multi-sport modes.",
+    "price": 4999,
+    "category": "wearables",
+    "specifications": "Display: AMOLED; Battery: 7 days; Sensors: HR, SpO2, GPS",
+    "reviews": "Accurate tracking and battery lasts nearly a week."
+  },
+  {
+    "product_id": 301,
+    "name": "HydraSip Steel Bottle",
+    "description": "Insulated steel bottle keeps liquids cold for 24 hours and hot for 12 hours.",
+    "price": 899,
+    "category": "accessories",
+    "specifications": "Capacity: 750ml; Material: stainless steel; Lid: leak-proof",
+    "reviews": "Solid build quality and no leakage in gym bag."
+  },
+  {
+    "product_id": 401,
+    "name": "CoreMax Yoga Mat",
+    "description": "Non-slip yoga mat with extra cushioning for floor workouts and stretching.",
+    "price": 1599,
+    "category": "fitness",
+    "specifications": "Thickness: 8mm; Material: TPE; Size: 183x61cm",
+    "reviews": "Soft and grippy, ideal for home workouts."
+  },
+  {
+    "product_id": 106,
+    "name": "EnduroCushion 5",
+    "description": "Long-distance running shoes with plush cushioning and wide forefoot comfort.",
+    "price": 4999,
+    "category": "shoes",
+    "specifications": "Weight: 275g; Cushion: high; Fit: regular to wide; Use: long runs",
+    "reviews": "Excellent for half marathon training and recovery runs."
+  },
+  {
+    "product_id": 107,
+    "name": "BudgetRun Starter",
+    "description": "Entry-level running shoes for beginners with decent cushioning and durable outsole.",
+    "price": 2199,
+    "category": "shoes",
+    "specifications": "Weight: 300g; Cushion: medium; Upper: mesh; Use: beginner running",
+    "reviews": "Affordable and comfortable for new runners."
+  }
+]
