@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+**/.venv/
+**/venv/
+backend/.venv/
+backend/venv/
+
+# Node / frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Environment files
+.env
+.env.*
+!.env.example
+backend/.env
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Logs
+*.log
+backend/logs/
+
+# Local vector / database artifacts
+backend/chroma/
+backend/chroma_data/
+FastApi/chroma_data/
+*.db
+*.sqlite3
+backend/verify.db
+backend/test.db
+backend/app.db
+
+# Data exports / generated processed files
+backend/data/processed/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Archives / binaries
+*.zip
+*.dll
