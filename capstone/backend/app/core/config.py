@@ -35,12 +35,6 @@ class Settings(BaseSettings):
     raw_dataset_path: str = str(
         Path(__file__).resolve().parents[2] / "data" / "raw" / "it_incidents_10k.csv"
     )
-    resolution_seed_path: str = str(
-        Path(__file__).resolve().parents[2]
-        / "data"
-        / "raw"
-        / "incident_resolution_seed.csv"
-    )
     processed_dataset_path: str = str(
         Path(__file__).resolve().parents[2] / "data" / "processed" / "incidents_cleaned.csv"
     )

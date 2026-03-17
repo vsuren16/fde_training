@@ -1,77 +1,110 @@
 # AI-Powered Incident Knowledge Base Assistant
 
-Production-oriented capstone for an IT support incident retrieval assistant built with:
+Production-shaped capstone for IT support incident retrieval, grounded resolution guidance, and observability-driven operations.
+
+## Stack
 
 - `FastAPI` for REST APIs
 - `React` + CSS for the operator UI
-- `MongoDB` for incident documents and operational metadata
-- `ChromaDB` for vector storage
-- `OpenAI SDK` for embeddings and generation
-- `LangSmith` for tracing and observability
+- `MongoDB` as the system of record
+- `ChromaDB` for vector retrieval
+- `OpenAI SDK` for embeddings, generation, fallback guidance, and LLM-as-judge
+- `LangSmith` for traceability
 
-## Scope
+## What Is Implemented
 
-This repository is intentionally structured for `Requirement 1` while preserving clean extension points for `Requirement 2`.
+### Requirement 1
 
-Implemented:
+- Basic RAG for incident similarity search
+- Hybrid search: keyword + semantic retrieval
+- Triage priority classification
+- Metadata filtering by `category` and `team`
+- Basic resolution suggestion grounded in retrieved incidents
+- Input validation guardrails with Pydantic
+- Output guardrails with judge-based downgrade behavior
+- Simple ticket routing
+- REST API endpoints for ingestion, search, feedback, health, and admin diagnostics
+- Frontend for search, evidence review, triage, routing, and fallback disclosure
 
-- Modular backend/frontend layout
-- Canonical incident schema and cleansing pipeline
-- Production-ready logging/configuration foundations
-- API boundaries for health, ingestion, and search
-- Native-resolution ingestion from a 10K incident dataset with real descriptions and resolution notes
-- Architecture, data flow, and ADR documentation
-- UI connected to ingestion and search APIs
-- Requirement 2 scaffold for reranking, custom metrics, agent handoff, RCA, feedback, and DeepEval readiness
-- Judge transparency in the UI and persistent rotating JSON logs
-- Admin / Observability panel with backend-validated login and gated diagnostics links
+### Requirement 2 Vertical Slice
+
+- Reranking by recency and historical success heuristics
+- Predicted resolution time
+- Fix confidence heuristic
+- LLM-as-judge troubleshooting validation
+- Token optimization for evidence selection
+- Multi-tier handoff path such as `L1 -> L2 -> L3`
+- A2A-style escalation messages
+- Root cause summary
+- Feedback loop endpoint and persistence
+- DeepEval readiness hook
+
+Current limitation:
+- Requirement 2 is implemented as a working vertical slice, not as a fully autonomous multi-agent production platform.
 
 ## Active Dataset
 
-The active ingestion path now uses `it_incidents_10k.csv`, which includes native `description` and `resolution_notes` fields. That removes the earlier dependency on synthetic resolution generation and gives the retrieval stack substantially better grounding.
+The active ingestion path uses `backend/data/raw/it_incidents_10k.csv`.
 
-The older ITSM + seed-template path is no longer the primary flow.
+This dataset includes real:
 
-## Project Layout
+- `title`
+- `description`
+- `resolution_notes`
+- `team`
+- `status`
+- `resolution_time_hours`
 
-- `backend/`: FastAPI service, ingestion pipeline, adapters, repositories, evaluation hooks
-- `frontend/`: React application for search, triage, and incident review
-- `docs/`: architecture, data flow, ADRs, and scaling notes
-
-## Why Both MongoDB and ChromaDB
-
-- `MongoDB` stores the canonical cleaned incident document, metadata, provenance, and future feedback/evaluation data.
-- `ChromaDB` stores embeddings for semantic retrieval.
-
-Keeping both is still the right design because vector search alone is a poor source of truth, while MongoDB alone is weaker for dense semantic search at Requirement 1 scale.
+That replaced the older synthetic-resolution-heavy path and materially improved retrieval quality and answer grounding.
 
 ## Current Core Flow
 
-1. Clean `it_incidents_10k.csv`.
-2. Materialize native incident text and resolution evidence.
-3. Materialize `backend/data/processed/incidents_cleaned.csv`.
-4. Load incidents into MongoDB.
-5. Build Chroma vectors when `OPENAI_API_KEY` is configured.
-6. Run hybrid retrieval:
-   keyword search in memory + semantic retrieval in Chroma.
-7. Rerank incidents using retrieval score, recency, and resolution-success heuristics.
-8. Validate the generated answer with LLM-as-judge or heuristic fallback.
-9. Return triage, route target, handoff path, RCA summary, custom metrics, and grounded resolution guidance.
+1. Load and clean `it_incidents_10k.csv`.
+2. Materialize `backend/data/processed/incidents_cleaned.csv`.
+3. Replace canonical incidents in MongoDB.
+4. Rebuild vector embeddings in ChromaDB when `OPENAI_API_KEY` is valid.
+5. Warm the in-memory keyword index.
+6. Run hybrid retrieval: keyword + semantic.
+7. Rerank by retrieval score, recency, and success heuristics.
+8. Generate grounded resolution guidance from retrieved evidence.
+9. Validate the answer with LLM-as-judge or heuristic fallback.
+10. If internal evidence is not sufficiently relevant, disclose that and route to an AI-model fallback response.
+11. Return incidents, triage priority, route target, handoff path, RCA summary, metrics, and observability metadata.
 
-## Requirement 2 Extensions
+## Guardrails
 
-- Reranking by recency and historical resolution-success heuristics
-- Predicted resolution time and fix-accuracy metrics
-- LLM-as-judge validation for troubleshooting steps
-- Token-optimized evidence selection for judge and resolution calls
-- Multi-tier handoff path such as `L1 -> L2 -> L3`
-- Agent-to-agent context messages for specialist escalation
-- Root cause summary generated from retrieved evidence and handoff context
-- Feedback endpoint for continuous improvement data capture
-- DeepEval readiness endpoint for benchmark integration
+- Input guardrails:
+  - query validation through Pydantic
+  - length and quality validation
+  - metadata filter validation
+- Retrieval guardrails:
+  - internal evidence relevance gate before trusting retrieved incidents
+- Output guardrails:
+  - LLM-as-judge for grounding and troubleshooting relevance
+  - downgrade to conservative evidence-backed fallback when grounding is weak
+  - explicit disclosure when the system routes to an AI-model fallback
 
-Current limitation:
-- these Requirement 2 features are implemented as a working vertical slice, not a full autonomous multi-agent production platform yet
+## Admin / Observability
+
+The Admin panel includes:
+
+- Mongo-backed admin auth with hashed passwords
+- Signup/login flow
+- LangSmith project link
+- Downloadable rotating log file
+- Real connectivity diagnostics for:
+  - MongoDB
+  - LangSmith
+  - ChromaDB
+  - OpenAI
+
+Connectivity status is based on real checks, not only whether a key or URI exists in config.
+
+## Project Layout
+
+- `backend/`: FastAPI service, ingestion, adapters, repositories, evaluation, admin routes
+- `frontend/`: React UI for search, insights, and admin diagnostics
+- `docs/`: architecture, data flow, and architectural decisions
 
 ## Run Locally
 
@@ -79,42 +112,44 @@ Current limitation:
 
 - Python 3.10+
 - Node.js 20+
-- Local MongoDB running on `mongodb://localhost:27017`
-- Optional: OpenAI API key for embeddings and LLM summaries
+- Local MongoDB on `mongodb://localhost:27017`
+- Optional but recommended:
+  - valid `OPENAI_API_KEY`
+  - valid `LANGSMITH_API_KEY`
 
 ### Backend
 
-1. Open a terminal in [backend](/c:/Users/Administrator/Documents/GenAI%20Training/capstone/backend).
+1. Open a terminal in `capstone/backend`
 2. Create a virtual environment:
-   `python -m venv .venv`
+   - `python -m venv .venv`
 3. Activate it:
-   `.\.venv\Scripts\activate`
+   - `.\.venv\Scripts\activate`
 4. Install dependencies:
-   `pip install -r requirements.txt`
-5. Create `.env` from [.env.example](/c:/Users/Administrator/Documents/GenAI%20Training/capstone/backend/.env.example).
-6. Start the API:
-   `uvicorn app.main:app --reload --port 8010`
+   - `pip install -r requirements.txt`
+5. Create `.env` from `.env.example`
+6. Start the backend:
+   - `uvicorn app.main:app --reload --port 8010`
 
 ### Frontend
 
-1. Open a second terminal in [frontend](/c:/Users/Administrator/Documents/GenAI%20Training/capstone/frontend).
+1. Open a second terminal in `capstone/frontend`
 2. Install dependencies:
-   `npm install`
+   - `npm install`
 3. Start the UI:
-   `npm run dev`
+   - `npm run dev`
 
 ### First Use
 
 1. Start MongoDB locally.
-2. Start the backend.
-3. Start the frontend.
-4. If the dataset is not initialized yet, click `Initialize dataset`.
-5. Run a natural-language search query.
+2. Start backend and frontend.
+3. Open the UI.
+4. If the dataset is not initialized yet, click `Initialize Dataset`.
+5. Run a natural-language incident query.
 
 ## Notes
 
-- Without `OPENAI_API_KEY`, the system still works in degraded mode using keyword retrieval and heuristic resolution guidance.
-- With `OPENAI_API_KEY`, the system adds OpenAI embeddings for Chroma semantic retrieval, LLM-based resolution summaries, and OpenAI-backed judge validation.
-- Structured JSON logs are written to `backend/logs/application.log` by default, with rotation.
-- The main user workflow now favors free-text search; metadata filters are still supported by the backend but are no longer central to the UI workflow.
-- Admin credentials can be supplied through `.env` for local/demo use. This is acceptable for development and demos, but not sufficient as a production-grade authentication strategy on its own.
+- Without a valid OpenAI key, semantic retrieval and generation degrade gracefully.
+- With a valid OpenAI key, the system supports embeddings, grounded summaries, AI-model fallback guidance, and judge evaluation.
+- Logs are written to `backend/logs/application.log` with rotation.
+- The main workflow favors free-text search with focused metadata filters for `category` and `team`.
+- Admin credentials are no longer stored as demo defaults in the codebase.

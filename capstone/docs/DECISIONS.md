@@ -8,131 +8,178 @@ Use `FastAPI` as the backend framework.
 
 ### Why
 
-- Native async support for I/O-heavy workloads
-- Strong Pydantic validation for API contracts
-- Good fit for stateless, containerized services
-- Faster iteration than a heavier Java stack for this capstone
+- strong fit for Python-based AI integration
+- first-class Pydantic validation
+- fast iteration and clean async I/O support
 
-### Tradeoffs
+### Tradeoff
 
-- Less enterprise convention than Spring Boot
-- Team members from Java-heavy environments may prefer Spring ecosystems
-
-### Why not Spring Boot
-
-Spring Boot is viable, but the project already requires Python for OpenAI, ChromaDB, evaluation logic, and data processing. Keeping the AI and API layers in the same language lowers complexity and reduces cross-service overhead for Requirement 1.
+- less enterprise convention than Spring Boot
 
 ## ADR-002: MongoDB + ChromaDB Split
 
 ### Decision
 
-Use MongoDB for canonical incident documents and ChromaDB for vector search.
+Use MongoDB for canonical incident data and ChromaDB for vector retrieval.
 
 ### Why
 
-- Clean separation between source-of-truth data and vector search concerns
-- Fits the user constraint directly
-- Keeps metadata filtering and document lifecycle management straightforward
+- MongoDB fits operational documents, admin users, and feedback
+- ChromaDB fits semantic search
+- source of truth stays separate from derived vector index
 
-### Tradeoffs
+### Tradeoff
 
-- Dual-write complexity during ingestion
-- Requires consistency checks between document and vector stores
+- requires store synchronization strategy
 
-## ADR-003: Derived Retrieval Text from Structured Data
+## ADR-003: Hybrid Search Over Pure Semantic Search
 
 ### Decision
 
-Construct incident search text from available structured columns because the provided dataset lacks `description` and `resolution_notes`.
+Use keyword + semantic retrieval.
 
 ### Why
 
-- Allows Requirement 1 retrieval to proceed with the available dataset
-- Preserves a path to better retrieval once real incident text is available
+- IT support queries contain exact operational terms that keyword search handles well
+- semantic retrieval captures paraphrased incidents
 
-### Tradeoffs
+### Tradeoff
 
-- Lower semantic richness than true free-text tickets
-- Resolution suggestions will be more constrained and should be presented with clear confidence language
+- score merging and relevance tuning are required
 
-## ADR-006: Synthetic Resolution Notes with Provenance
+## ADR-004: RAG Over Direct LLM Answering
 
 ### Decision
 
-Generate a `synthetic_resolution` field for the ITSM dataset using deterministic templates seeded by the smaller resolution dataset.
+Generate answers from retrieved incident evidence first.
 
 ### Why
 
-- The large ITSM dataset has scale and metadata but lacks explicit resolution text
-- The 150-row dataset has solution text but is too small and repetitive to use as the primary incident corpus
-- A synthetic field enables Requirement 1 RAG and UI demonstrations while preserving a clean upgrade path to real resolution notes later
+- grounded answers are safer for support workflows
+- historical incidents and resolution notes are the knowledge asset
 
-### Tradeoffs
+### Tradeoff
 
-- Synthetic resolutions are useful for guidance, not for final truth claims
-- Evaluation results must distinguish between real evidence and generated enrichment
+- retrieval quality directly impacts answer quality
 
-## ADR-004: Modular Monolith for Requirement 1
+## ADR-005: Disclosed AI-Model Fallback for Weak Internal Evidence
 
 ### Decision
 
-Implement Requirement 1 as a modular monolith with explicit service boundaries.
+If internal evidence is not sufficiently relevant, do not force a KB-backed answer. Disclose the limitation and route the request to AI-model fallback guidance.
 
 ### Why
 
-- Faster to deliver and test
-- Avoids premature distributed-system complexity
-- Keeps architecture ready for later extraction into microservices
+- irrelevant KB matches are misleading
+- explicit disclosure preserves trust
+- users still receive actionable best-effort guidance
 
-### Tradeoffs
+### Tradeoff
 
-- Not a true independently deployed microservice fleet on day one
-- Requires discipline in package boundaries to avoid drift into a monolith blob
+- fallback guidance is less grounded in internal historical evidence
 
-## ADR-005: ChromaDB Behind an Abstraction
+## ADR-006: LLM-as-Judge Plus Deterministic Guardrails
 
 ### Decision
 
-Hide vector search behind a repository interface.
+Combine Pydantic validation, relevance gating, and judge-based validation.
 
 ### Why
 
-- Enables future swap to FAISS, Milvus, pgvector, or managed vector backends
-- Keeps orchestration logic independent from store-specific APIs
+- deterministic checks are cheap and reliable for basic API safety
+- judge evaluation helps reduce hallucinations and weakly grounded responses
 
-### Tradeoffs
+### Tradeoff
 
-- Slightly more upfront abstraction cost
-- Some backend-specific features may need adapter-specific extensions later
+- adds latency and extra model cost on the answer path
 
-## ADR-007: Conservative Degraded Mode for Slow or Weak LLM Paths
+## ADR-007: Modular Monolith for Current Delivery
 
 ### Decision
 
-Use degraded fallback summaries when OpenAI calls fail, time out, or judge confidence is weak.
+Implement the system as a modular monolith with explicit service boundaries.
 
 ### Why
 
-- Prevents hallucinated or weakly grounded troubleshooting advice
-- Keeps the UI responsive enough for support workflows
-- Makes system behavior explicit instead of silently returning low-confidence answers
+- lower operational complexity
+- easier local development and testing
+- preserves clean boundaries for later extraction
 
-### Tradeoffs
+### Tradeoff
 
-- Some answers become less polished
-- The system may be conservative and downgrade responses that are partly acceptable
+- not independently deployable microservices yet
 
-## ADR-008: Route Target Should Align With Final Handoff Stage
+## ADR-008: In-Process Reranking and Guardrails
 
 ### Decision
 
-Set `route_to` to the final stage of the computed handoff path.
+Keep reranking and guardrail execution inside the FastAPI process.
 
 ### Why
 
-- Avoids conflicting UI signals between route recommendation and handoff chain
-- Better matches how support teams think about escalation ownership
+- these sit on the hot path
+- in-process execution lowers latency
 
-### Tradeoffs
+### Tradeoff
 
-- Loses the distinction between immediate receiver and eventual owner unless both are displayed
+- less independent scaling than a dedicated inference service
+
+## ADR-009: Real 10K Incident Dataset Replaced Synthetic-First Flow
+
+### Decision
+
+Adopt the 10K dataset with native `description` and `resolution_notes` as the active corpus.
+
+### Why
+
+- real incident text materially improves retrieval quality and grounding
+- removes dependency on synthetic resolution notes for the main path
+
+### Tradeoff
+
+- required schema migration and ingestion refactor
+
+## ADR-010: Mongo-Backed Hashed Admin Auth
+
+### Decision
+
+Store admin users in MongoDB with hashed passwords.
+
+### Why
+
+- better than plaintext demo credentials in env
+- supports signup, duplicate checks, and persistent auth state
+
+### Tradeoff
+
+- still lighter than production SSO / OIDC
+
+## ADR-011: Real Connectivity Checks in Admin Diagnostics
+
+### Decision
+
+Admin diagnostics should report actual connectivity, not only whether config values exist.
+
+### Why
+
+- non-empty keys and URIs do not prove working integrations
+- operational diagnostics must be truthful
+
+### Tradeoff
+
+- slight runtime overhead when diagnostics are refreshed
+
+## ADR-012: Engineer-Focused UI Over Maximal Field Density
+
+### Decision
+
+Optimize the UI for scanability and clear operational signals.
+
+### Why
+
+- support engineers need quick interpretation
+- redundant metadata reduces usability
+
+### Tradeoff
+
+- some low-signal fields moved out of the main workflow
